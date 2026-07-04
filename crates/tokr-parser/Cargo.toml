@@ -1,0 +1,14 @@
+[package]
+name = "tokr-parser"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+tokr-ast = { version = "0.1.0", path = "../tokr-ast" }
+tokr-diagnostics = { version = "0.1.0", path = "../tokr-diagnostics" }
+tokr-lexer = { version = "0.1.0", path = "../tokr-lexer" }
+tokr-span = { version = "0.1.0", path = "../tokr-span" }
+smol_str = "0.3.6"
+
+[dev-dependencies]
+insta = "1.48.0"

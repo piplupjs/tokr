@@ -1,0 +1,105 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'   # Trigger on version tags like v1.0.0
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    if: >-
+      ${{ github.event_name == 'push' &&
+          startsWith(github.ref, 'refs/tags/') &&
+          (github.actor_association == 'OWNER' || github.actor_association == 'MEMBER') }}
+    name: Build (${{ matrix.target }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            artifact: tokr-linux-x86_64.tar.gz
+            bin: tokr
+          - os: macos-latest
+            target: x86_64-apple-darwin
+            artifact: tokr-macos-x86_64.tar.gz
+            bin: tokr
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            artifact: tokr-macos-aarch64.tar.gz
+            bin: tokr
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            artifact: tokr-windows-x86_64.zip
+            bin: tokr.exe
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: ${{ matrix.target }}
+          override: true
+
+      - name: Cache Cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-${{ matrix.target }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Build release binary
+        run: cargo build --release --locked --target ${{ matrix.target }}
+
+      # ---------- Unix packaging (Linux & macOS) ----------
+      - name: Package binary (Unix)
+        if: runner.os != 'Windows'
+        run: |
+          BIN="target/${{ matrix.target }}/release/${{ matrix.bin }}"
+          tar -czvf "${{ matrix.artifact }}" -C "$(dirname "$BIN")" "$(basename "$BIN")"
+
+      # ---------- Windows packaging ----------
+      - name: Package binary (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          $BIN = "target\${{ matrix.target }}\release\${{ matrix.bin }}"
+          Compress-Archive -Path $BIN -DestinationPath "${{ matrix.artifact }}"
+        shell: pwsh
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.artifact }}
+
+  release:
+    name: Create GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Create GitHub Release and upload assets
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+          files: artifacts/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

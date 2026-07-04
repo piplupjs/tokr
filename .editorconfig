@@ -1,0 +1,26 @@
+# EditorConfig helps developers define and maintain consistent
+# coding styles between different editors and IDEs.
+# http://editorconfig.org
+
+root = true
+
+# Global settings for all files
+[*]
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+charset = utf-8
+
+# JavaScript / ES Modules (.js, .mjs) specification
+[*.{js,mjs}]
+indent_style = space
+indent_size = 2
+
+# Go-specific source code specification (Go requires strict tabs)
+[*.go]
+indent_style = tab
+indent_size = 4
+
+# Markdown files
+[*.md]
+trim_trailing_whitespace = false

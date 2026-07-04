@@ -1,0 +1,7 @@
+---
+source: crates/plume-parser/src/lib.rs
+expression: file
+---
+File {
+    decls: [],
+}

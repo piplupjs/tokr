@@ -1,0 +1,35 @@
+---
+source: crates/plume-parser/src/lib.rs
+expression: file
+---
+File {
+    decls: [
+        ThemeDecl {
+            path: [
+                Field(
+                    "palette",
+                ),
+                Field(
+                    "accent",
+                ),
+            ],
+            path_span: Span {
+                lo: 0,
+                hi: 27,
+            },
+            var_name: "accent",
+            is_sass_var: true,
+            value: VarRef {
+                css_var: "--accent",
+                span: Span {
+                    lo: 37,
+                    hi: 50,
+                },
+            },
+            span: Span {
+                lo: 0,
+                hi: 51,
+            },
+        },
+    ],
+}

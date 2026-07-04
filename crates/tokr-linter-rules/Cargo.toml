@@ -1,0 +1,12 @@
+[package]
+name = "tokr-linter-rules"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+tokr-linter = { path = "../tokr-linter" }
+tokr-ast = { path = "../tokr-ast" }
+tokr-config = { path = "../tokr-config" }
+tokr-diagnostics = { path = "../tokr-diagnostics" }
+tokr-span = { path = "../tokr-span" }
+smol_str = "0.3"

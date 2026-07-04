@@ -1,0 +1,9 @@
+{
+    "$schema": "../../../tokr.schema.json",
+    "input": ["src/**/*.scss"],
+    "output": "dist",
+    "options": {
+        "format": "js",
+        "declaration": true
+    }
+}

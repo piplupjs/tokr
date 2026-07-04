@@ -1,0 +1,23 @@
+[package]
+name = "tokr-driver"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+globset = "0.4.18"
+tokr-ast = { version = "0.1.0", path = "../tokr-ast" }
+tokr-codegen = { version = "0.1.0", path = "../tokr-codegen" }
+tokr-diagnostics = { version = "0.1.0", path = "../tokr-diagnostics" }
+tokr-ir = { version = "0.1.0", path = "../tokr-ir" }
+tokr-lexer = { version = "0.1.0", path = "../tokr-lexer" }
+tokr-linter = { version = "0.1.0", path = "../tokr-linter" }
+tokr-linter-rules = { path = "../tokr-linter-rules" }
+tokr-config = { path = "../tokr-config" }
+tokr-parser = { version = "0.1.0", path = "../tokr-parser" }
+tokr-sema = { version = "0.1.0", path = "../tokr-sema" }
+tokr-span = { version = "0.1.0", path = "../tokr-span" }
+rayon = "1.12.0"
+walkdir = "2.5.0"
+
+[dev-dependencies]
+tempfile = "3.27.0"

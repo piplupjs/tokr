@@ -1,0 +1,32 @@
+---
+source: crates/plume-parser/src/lib.rs
+expression: file
+---
+File {
+    decls: [
+        ThemeDecl {
+            path: [
+                Field(
+                    "a",
+                ),
+            ],
+            path_span: Span {
+                lo: 11,
+                hi: 25,
+            },
+            var_name: "a",
+            is_sass_var: true,
+            value: Raw {
+                text: "1",
+                span: Span {
+                    lo: 30,
+                    hi: 31,
+                },
+            },
+            span: Span {
+                lo: 11,
+                hi: 32,
+            },
+        },
+    ],
+}

@@ -1,0 +1,20 @@
+
+
+[package]
+name = "tokr-bin"
+version = "0.1.0"
+edition = "2021"
+description = "Root binary wrapper for Tokr CLI."
+license = "Apache-2.0"
+
+
+[[bin]]
+name = "tokr"
+path = "src/main.rs"
+
+[workspace]
+members = [
+    "crates/*",
+    "cli/tokr"
+]
+resolver = "2"

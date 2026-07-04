@@ -1,0 +1,8 @@
+[package]
+name = "tokr-ast"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+tokr-span = { version = "0.1.0", path = "../tokr-span" }
+smol_str = "0.3.6"

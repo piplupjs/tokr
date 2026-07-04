@@ -1,0 +1,11 @@
+[package]
+name = "tokr-codegen"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+tokr-ir = { version = "0.1.0", path = "../tokr-ir" }
+serde_json = "1.0.150"
+
+[dev-dependencies]
+indexmap = "2.14.0"

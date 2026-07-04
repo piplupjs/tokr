@@ -1,0 +1,14 @@
+[package]
+name = "tokr-ir"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+indexmap = "2.14.0"
+tokr-ast = { version = "0.1.0", path = "../tokr-ast" }
+tokr-diagnostics = { version = "0.1.0", path = "../tokr-diagnostics" }
+tokr-sema = { version = "0.1.0", path = "../tokr-sema" }
+
+[dev-dependencies]
+tokr-span = { path = "../tokr-span" }
+smol_str = "0.3.6"
