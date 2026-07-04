@@ -11,7 +11,7 @@ jobs:
     if: >-
       ${{ github.event_name == 'push' &&
           startsWith(github.ref, 'refs/tags/') &&
-          (github.actor_association == 'OWNER' || github.actor_association == 'MEMBER') }}
+          github.actor == github.repository_owner }}
     name: Build (${{ matrix.target }})
     runs-on: ${{ matrix.os }}
     strategy:
