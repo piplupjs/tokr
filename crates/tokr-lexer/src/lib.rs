@@ -79,16 +79,12 @@ impl<'a> Lexer<'a> {
         let start = self.pos;
         let c = self.bytes[self.pos];
 
-        if c == b'/' {
-            if self.pos + 1 < self.bytes.len() {
-                let next = self.bytes[self.pos + 1];
-                if next == b'/' {
-                    self.skip_line_comment();
-                    return None;
-                } else if next == b'*' {
-                    return self.scan_block_comment(diags);
-                }
-            }
+        if c == b'/' && self.pos + 1 < self.bytes.len() && self.bytes[self.pos + 1] == b'/' {
+            self.skip_line_comment();
+            return None;
+        }
+        if c == b'/' && self.pos + 1 < self.bytes.len() && self.bytes[self.pos + 1] == b'*' {
+            return self.scan_block_comment(diags);
         }
 
         self.pos += 1;

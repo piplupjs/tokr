@@ -82,6 +82,7 @@ pub struct ProjectResult {
     pub errors: Vec<(PathBuf, DiagnosticBag)>,
 }
 
+#[allow(clippy::too_many_arguments, clippy::collapsible_if)]
 pub fn compile_project(
     root: &Path,
     output_dir: &Path,

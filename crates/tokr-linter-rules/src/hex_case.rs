@@ -18,6 +18,7 @@ impl LintRule for HexCaseRule {
         "hex-case"
     }
 
+    #[allow(clippy::collapsible_if)]
     fn check_file(&self, file: &File, diags: &mut DiagnosticBag) {
         for decl in &file.decls {
             if let Value::Raw { text, span } = &decl.value {
@@ -26,7 +27,6 @@ impl LintRule for HexCaseRule {
                         HexCase::Lower => text.to_lowercase(),
                         HexCase::Upper => text.to_uppercase(),
                     };
-
                     if text.as_str() != expected {
                         let fix = LintFix {
                             span: *span,

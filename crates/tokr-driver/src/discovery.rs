@@ -46,8 +46,8 @@ pub fn map_output_path(
     }
 
     let file_stem = rel.file_stem()?.to_string_lossy();
-    let name = if file_stem.starts_with('_') {
-        &file_stem[1..]
+    let name = if let Some(stripped) = file_stem.strip_prefix('_') {
+        stripped
     } else {
         &file_stem
     };
