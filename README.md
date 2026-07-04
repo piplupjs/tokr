@@ -9,18 +9,6 @@
 
 **Tokr** is a high‑performance, Rust‑based command‑line compiler that transforms token definition files (e.g. CSS & SCSS variables) into **TypeScript** or **JavaScript** modules. It is purpose‑built for front‑end teams that need a single source of truth for design tokens, enabling type‑safe imports in modern JavaScript/TypeScript projects.
 
-The tool provides:
-
-- **Fast, parallel compilation** driven by `rayon`.
-- **Configurable linting** (kebab‑case variable names, hexadecimal case, …).
-- **Strict / watch modes** for CI pipelines and local development.
-- **Automatic output mapping** that mirrors the input directory structure.
-
-The repository is a **workspace** containing a collection of crates that implement the lexer, parser, semantic analysis, intermediate representation, code generation, diagnostics, and driver orchestration.
-
----
-
-## Features
 
 | Feature | Description |
 |---------|-------------|
@@ -32,7 +20,6 @@ The repository is a **workspace** containing a collection of crates that impleme
 | **Extensible linting** | Enable/disable specific lint rules via `tokr.json`.
 | **Multiple output formats** | Generate **TypeScript** (`.ts`) or **JavaScript** (`.js`) along with optional declaration files (`.d.ts`).
 
----
 
 ## Getting Started
 
@@ -70,6 +57,39 @@ sudo cp target/release/tokr /usr/local/bin/
 
 ## Usage
 
+
+Tokr uses a special comment annotation `/* @theme <path> */` placed in your SCSS/CSS source files to indicate which design token should be generated at that location. The `<path>` is a dot‑separated identifier that determines the hierarchical name of the token in the output module.
+
+**How it works**
+
+- The lexer recognizes the `@theme` comment and attaches the specified token name to the following declaration.
+- During compilation the token value is extracted and emitted as a constant in the generated TypeScript/JavaScript file.
+- If the annotation is missing, the declaration is ignored by the token extraction pass.
+
+**Examples**
+
+```scss
+/* @theme colors.primary */
+$primary: #ff5722;
+
+/* @theme spacing.base */
+$spacing-base: 8px;
+```
+
+These produce `export const colors = { primary: "#ff5722" };` in the output.
+
+All flags are also available in the configuration file (see next section).
+
+
+**Supported syntax**
+
+- Block comment `/* @theme <path> */`
+- Line comment `// @theme <path>`
+- The annotation must appear immediately before the variable declaration.
+
+For more details see the parser implementation and the test suite.
+
+
 ```bash
 # Show the full help text
 $tokr --help
@@ -86,11 +106,6 @@ $tokr --help
 | `tokr --out-dir <dir>` | Override the output directory defined in the config.
 | `tokr --config <path>` | Use a custom configuration file (default: `tokr.json`).
 | `tokr --input <glob>` | Provide input glob patterns via the CLI (overrides config).
-```
-
-All flags are also available in the configuration file (see next section).
-
----
 
 ## Configuration
 
@@ -119,7 +134,6 @@ Tokr reads a JSON configuration file (`tokr.json` by default). An example config
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `$schema` | `string` (optional) | URL to a JSON‑Schema that validates the file.
 | `input` | `array<string>` | Glob patterns for token source files.
 | `output` | `string` (optional) | Path of the primary generated file.
 | `options.strict` | `bool` (default `false`) | Fail the compilation on warnings.
