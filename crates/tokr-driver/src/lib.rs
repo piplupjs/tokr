@@ -18,7 +18,7 @@ pub fn compile(
     lint_cfg: Option<&tokr_config::LintConfig>,
     is_js: bool,
     declaration: bool,
-) -> Result<(String, Option<String>), DiagnosticBag> {
+) -> Result<Option<(String, Option<String>)>, DiagnosticBag> {
     let (tokens, lex_diags) = tokr_lexer::Lexer::new(src).tokenize();
     let mut diags = DiagnosticBag::default();
     diags.extend(lex_diags);
@@ -28,6 +28,11 @@ pub fn compile(
 
     if diags.has_errors() {
         return Err(diags);
+    }
+
+    // No @theme annotations in this file — emit nothing.
+    if file.decls.is_empty() {
+        return Ok(None);
     }
 
     if let Some(l_cfg) = lint_cfg {
@@ -55,10 +60,6 @@ pub fn compile(
         return Err(diags);
     }
 
-    if diags.has_errors() {
-        return Err(diags);
-    }
-
     let ir = tokr_ir::lower(&sym_table);
     let ir = tokr_ir::run_passes(ir, cfg);
 
@@ -74,7 +75,7 @@ pub fn compile(
         None
     };
 
-    Ok((main_code, decl_code))
+    Ok(Some((main_code, decl_code)))
 }
 
 pub struct ProjectResult {
@@ -108,7 +109,8 @@ pub fn compile_project(
             };
 
             match compile(&src, cfg, lint_cfg, is_js, declaration) {
-                Ok((main_code, decl_code)) => {
+                Ok(None) => Ok(()), // no @theme annotations — skip output file
+                Ok(Some((main_code, decl_code))) => {
                     let main_ext = if is_js { "js" } else { "ts" };
 
                     if let Some(out_path) =
@@ -210,5 +212,78 @@ pub fn compile_project(
     ProjectResult {
         success_count,
         errors,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::fs;
+    use std::path::Path;
+    use tempfile::tempdir;
+
+    #[test]
+    fn test_compile_project_no_theme_annotation_produces_no_output() {
+        // A plain SCSS file with no @theme annotation should not emit any output file.
+        let dir = tempdir().unwrap();
+        let root = dir.path();
+        let src_path = root.join("src").join("style.scss");
+        fs::create_dir_all(src_path.parent().unwrap()).unwrap();
+        fs::write(&src_path, "$color: var(--color);").unwrap();
+
+        let discovery = discovery::FileDiscovery::new(&["src/**/*.scss".to_string()]).unwrap();
+        let out_dir = Path::new("");
+
+        let result = compile_project(
+            root,
+            out_dir,
+            &discovery,
+            &PassConfig::default(),
+            None,
+            false, // is_js => generate .ts
+            true,  // declaration => generate .d.ts
+            false, // check_mode
+        );
+
+        assert_eq!(result.success_count, 1);
+        assert!(result.errors.is_empty());
+
+        // No output file should have been written.
+        let expected_ts = root.join("src").join("style.ts");
+        assert!(!expected_ts.exists(), "expected no output file for file without @theme");
+    }
+
+    #[test]
+    fn test_compile_project_with_theme_annotation_produces_output() {
+        // A SCSS file with a @theme annotation should emit a .ts output file.
+        let dir = tempdir().unwrap();
+        let root = dir.path();
+        let src_path = root.join("src").join("tokens.scss");
+        fs::create_dir_all(src_path.parent().unwrap()).unwrap();
+        fs::write(
+            &src_path,
+            "/* @theme palette.accent */\n$accent: var(--accent);",
+        )
+        .unwrap();
+
+        let discovery = discovery::FileDiscovery::new(&["src/**/*.scss".to_string()]).unwrap();
+        let out_dir = Path::new("");
+
+        let result = compile_project(
+            root,
+            out_dir,
+            &discovery,
+            &PassConfig::default(),
+            None,
+            false, // is_js => generate .ts
+            false, // declaration
+            false, // check_mode
+        );
+
+        assert_eq!(result.success_count, 1);
+        assert!(result.errors.is_empty());
+
+        let expected_ts = root.join("src").join("tokens.ts");
+        assert!(expected_ts.exists(), "expected .ts output for file with @theme");
     }
 }

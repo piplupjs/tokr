@@ -1,5 +1,5 @@
 ---
-source: crates/plume-parser/src/lib.rs
+source: crates/tokr-parser/src/lib.rs
 expression: file
 ---
 File {

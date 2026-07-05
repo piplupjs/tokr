@@ -30,11 +30,6 @@ impl<'t> Parser<'t> {
                     Err(_) => self.synchronize(),
                 }
             } else {
-                self.diags.warn(
-                    "TC0101",
-                    "declaration with no preceding @theme annotation",
-                    self.cur_span(),
-                );
                 self.synchronize();
             }
         }
@@ -367,6 +362,30 @@ mod tests {
         let src = "$stray: 1; /* @theme a */\n$a: 1;";
         let (file, diags) = parse(src);
         insta::assert_debug_snapshot!(file);
-        assert!(diags.into_vec().iter().any(|d| d.code == "TC0101"));
+        assert!(!diags.has_errors());
+    }
+
+    #[test]
+    fn test_sass_var_without_theme() {
+        let src = "$color: var(--color);";
+        let (file, diags) = parse(src);
+        assert!(file.decls.is_empty());
+        assert!(!diags.has_errors());
+    }
+
+    #[test]
+    fn test_css_custom_prop_without_theme() {
+        let src = "--spacing: 1rem;";
+        let (file, diags) = parse(src);
+        assert!(file.decls.is_empty());
+        assert!(!diags.has_errors());
+    }
+
+    #[test]
+    fn test_non_variable_statement_no_warning() {
+        let src = "@use \"sass:color\" as color;";
+        let (file, diags) = parse(src);
+        assert!(file.decls.is_empty());
+        assert!(!diags.has_errors());
     }
 }

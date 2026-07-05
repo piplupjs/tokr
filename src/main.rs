@@ -56,7 +56,7 @@ fn main() {
     let out_dir = cli
         .out_dir
         .or_else(|| config.output.map(PathBuf::from))
-        .unwrap_or_else(|| PathBuf::from("dist"));
+        .unwrap_or_else(PathBuf::new);
 
     let discovery = FileDiscovery::new(&inputs).expect("invalid glob pattern");
 

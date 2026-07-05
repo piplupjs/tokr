@@ -92,6 +92,7 @@ fn ensure_len(arr: &mut Vec<IrNode>, len: usize) {
 
 use std::collections::HashMap;
 
+#[derive(Default)]
 pub struct PassConfig {
     pub strict: bool,
     pub order_table: HashMap<String, Vec<String>>, // key = dotted prefix, "" = root

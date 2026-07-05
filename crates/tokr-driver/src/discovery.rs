@@ -38,13 +38,24 @@ pub fn map_output_path(
     output_dir: &Path,
     ext: &str,
 ) -> Option<PathBuf> {
+    // Compute the path of the source relative to the project root.
     let rel = src_path.strip_prefix(root).ok()?;
-    let mut out = output_dir.to_path_buf();
 
-    if let Some(parent) = rel.parent() {
-        out.push(parent);
-    }
+    // If no output directory is supplied (empty path), place the generated file
+    // alongside the source file. Otherwise preserve the relative directory
+    // structure under the provided output directory.
+    let mut out = if output_dir.as_os_str().is_empty() {
+        // Use the source file's parent directory as the base.
+        src_path.parent()?.to_path_buf()
+    } else {
+        let mut p = output_dir.to_path_buf();
+        if let Some(parent) = rel.parent() {
+            p.push(parent);
+        }
+        p
+    };
 
+    // Derive the output filename, stripping a leading underscore if present.
     let file_stem = rel.file_stem()?.to_string_lossy();
     let name = if let Some(stripped) = file_stem.strip_prefix('_') {
         stripped
