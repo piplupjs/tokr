@@ -76,7 +76,7 @@ $primary: #ff5722;
 $spacing-base: 8px;
 ```
 
-These produce `export const colors = { primary: "#ff5722" };` in the output.
+These produce `export const theme = { colors: { primary: "#ff5722" }, spacing: { base: "8px" };` in the output.
 
 All flags are also available in the configuration file (see next section).
 
@@ -84,7 +84,6 @@ All flags are also available in the configuration file (see next section).
 **Supported syntax**
 
 - Block comment `/* @theme <path> */`
-- Line comment `// @theme <path>`
 - The annotation must appear immediately before the variable declaration.
 
 For more details see the parser implementation and the test suite.
