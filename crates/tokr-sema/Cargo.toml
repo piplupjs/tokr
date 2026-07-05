@@ -1,13 +1,13 @@
 [package]
 name = "tokr-sema"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 
 [dependencies]
 indexmap = "2.14.0"
-tokr-ast = { version = "0.1.0", path = "../tokr-ast" }
-tokr-diagnostics = { version = "0.1.0", path = "../tokr-diagnostics" }
-tokr-span = { version = "0.1.0", path = "../tokr-span" }
+tokr-ast = { version = "0.1.1", path = "../tokr-ast" }
+tokr-diagnostics = { version = "0.1.1", path = "../tokr-diagnostics" }
+tokr-span = { version = "0.1.1", path = "../tokr-span" }
 smol_str = "0.3.6"
 
 [dev-dependencies]

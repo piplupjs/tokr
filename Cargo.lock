@@ -609,7 +609,7 @@ dependencies = [
 
 [[package]]
 name = "tokr"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "clap",
  "notify",
@@ -623,7 +623,7 @@ dependencies = [
 
 [[package]]
 name = "tokr-ast"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "smol_str",
  "tokr-span",
@@ -631,7 +631,7 @@ dependencies = [
 
 [[package]]
 name = "tokr-codegen"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "indexmap",
  "serde_json",
@@ -640,7 +640,7 @@ dependencies = [
 
 [[package]]
 name = "tokr-config"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "serde",
  "serde_json",
@@ -648,7 +648,7 @@ dependencies = [
 
 [[package]]
 name = "tokr-diagnostics"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "codespan-reporting",
  "tokr-span",
@@ -656,7 +656,7 @@ dependencies = [
 
 [[package]]
 name = "tokr-driver"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "globset",
  "rayon",
@@ -677,7 +677,7 @@ dependencies = [
 
 [[package]]
 name = "tokr-ir"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "indexmap",
  "smol_str",
@@ -689,7 +689,7 @@ dependencies = [
 
 [[package]]
 name = "tokr-lexer"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "smol_str",
  "tokr-diagnostics",
@@ -698,7 +698,7 @@ dependencies = [
 
 [[package]]
 name = "tokr-linter"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "smol_str",
  "tokr-ast",
@@ -709,7 +709,7 @@ dependencies = [
 
 [[package]]
 name = "tokr-linter-rules"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "smol_str",
  "tokr-ast",
@@ -721,7 +721,7 @@ dependencies = [
 
 [[package]]
 name = "tokr-parser"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "insta",
  "smol_str",
@@ -733,7 +733,7 @@ dependencies = [
 
 [[package]]
 name = "tokr-sema"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "indexmap",
  "smol_str",
@@ -746,7 +746,7 @@ dependencies = [
 
 [[package]]
 name = "tokr-span"
-version = "0.1.0"
+version = "0.1.1"
 
 [[package]]
 name = "unicode-ident"

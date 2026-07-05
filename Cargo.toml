@@ -2,7 +2,7 @@
 
 [package]
 name = "tokr"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "Token compiler CLI."
 license = "Apache-2.0"
@@ -14,12 +14,12 @@ path = "src/main.rs"
 [dependencies]
 clap = { version = "4.6.1", features = ["derive"] }
 notify = "8.2.0"
-tokr-config = { version = "0.1.0", path = "crates/tokr-config" }
-tokr-diagnostics = { version = "0.1.0", path = "crates/tokr-diagnostics" }
-tokr-driver = { version = "0.1.0", path = "crates/tokr-driver" }
-tokr-ir = { version = "0.1.0", path = "crates/tokr-ir" }
-tokr-lexer = { version = "0.1.0", path = "crates/tokr-lexer" }
-tokr-parser = { version = "0.1.0", path = "crates/tokr-parser" }
+tokr-config = { version = "0.1.1", path = "crates/tokr-config" }
+tokr-diagnostics = { version = "0.1.1", path = "crates/tokr-diagnostics" }
+tokr-driver = { version = "0.1.1", path = "crates/tokr-driver" }
+tokr-ir = { version = "0.1.1", path = "crates/tokr-ir" }
+tokr-lexer = { version = "0.1.1", path = "crates/tokr-lexer" }
+tokr-parser = { version = "0.1.1", path = "crates/tokr-parser" }
 
 [workspace]
 members = [

@@ -1,8 +1,8 @@
 [package]
 name = "tokr-diagnostics"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 
 [dependencies]
 codespan-reporting = "0.13.1"
-tokr-span = { version = "0.1.0", path = "../tokr-span" }
+tokr-span = { version = "0.1.1", path = "../tokr-span" }
