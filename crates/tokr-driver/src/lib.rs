@@ -250,7 +250,10 @@ mod tests {
 
         // No output file should have been written.
         let expected_ts = root.join("src").join("style.ts");
-        assert!(!expected_ts.exists(), "expected no output file for file without @theme");
+        assert!(
+            !expected_ts.exists(),
+            "expected no output file for file without @theme"
+        );
     }
 
     #[test]
@@ -284,6 +287,9 @@ mod tests {
         assert!(result.errors.is_empty());
 
         let expected_ts = root.join("src").join("tokens.ts");
-        assert!(expected_ts.exists(), "expected .ts output for file with @theme");
+        assert!(
+            expected_ts.exists(),
+            "expected .ts output for file with @theme"
+        );
     }
 }

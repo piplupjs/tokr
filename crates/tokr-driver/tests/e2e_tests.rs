@@ -16,7 +16,11 @@ fn test_golden_sample() {
         order_table,
     };
 
-    let Some((ts, _dts)) = compile(src, &cfg, None, false, false).expect("Should compile successfully") else { panic!("expected Some output") };
+    let Some((ts, _dts)) =
+        compile(src, &cfg, None, false, false).expect("Should compile successfully")
+    else {
+        panic!("expected Some output")
+    };
 
     // Assert against some expected structures in the TS output
     assert!(ts.contains("export const theme ="));
@@ -40,7 +44,11 @@ fn test_box_shadow_array() {
         order_table: HashMap::new(),
     };
 
-    let Some((ts, _dts)) = compile(src, &cfg, None, false, false).expect("Should compile successfully") else { panic!("expected Some output") };
+    let Some((ts, _dts)) =
+        compile(src, &cfg, None, false, false).expect("Should compile successfully")
+    else {
+        panic!("expected Some output")
+    };
 
     // Expected hole filling at index 1
     assert!(ts.contains("boxShadow: ["));
@@ -67,7 +75,11 @@ fn test_css_variables() {
         order_table: HashMap::new(),
     };
 
-    let Some((ts, _dts)) = compile(src, &cfg, None, false, false).expect("Should compile successfully") else { panic!("expected Some output") };
+    let Some((ts, _dts)) =
+        compile(src, &cfg, None, false, false).expect("Should compile successfully")
+    else {
+        panic!("expected Some output")
+    };
 
     assert!(ts.contains("color: {"));
     assert!(ts.contains("accent: {"));
