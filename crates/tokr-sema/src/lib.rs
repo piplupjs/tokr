@@ -14,11 +14,13 @@ pub struct SymbolTable {
     pub entries: IndexMap<Path, ThemeSymbol>,
 }
 
-pub fn analyze(file: &File, diags: &mut DiagnosticBag) -> SymbolTable {
+pub fn analyze(file: &File, allow_name_mismatch: bool, diags: &mut DiagnosticBag) -> SymbolTable {
     let mut table = SymbolTable::default();
 
     for decl in &file.decls {
-        check_name_consistency(decl, diags);
+        if !allow_name_mismatch {
+            check_name_consistency(decl, diags);
+        }
         check_duplicate_paths(&mut table, decl, diags);
         if !table.entries.contains_key(&decl.path) {
             table.entries.insert(
@@ -161,8 +163,12 @@ mod tests {
     }
 
     fn analyze_src(src: &str) -> (SymbolTable, DiagnosticBag) {
+        analyze_src_opts(src, false)
+    }
+
+    fn analyze_src_opts(src: &str, allow_name_mismatch: bool) -> (SymbolTable, DiagnosticBag) {
         let (file, mut bag) = parse_test_file(src);
-        let table = analyze(&file, &mut bag);
+        let table = analyze(&file, allow_name_mismatch, &mut bag);
         (table, bag)
     }
 
@@ -180,6 +186,34 @@ mod tests {
         let (_, diags) = analyze_src(src);
         let errs = diags.into_vec();
         assert!(errs.iter().any(|d| d.code == "TC0202"));
+
+        // CSS variable mismatch tests corresponding to TC0202 errors
+        let css_src = "
+            /* @theme sidebar.primary */
+            --color-sidebar-primary: var(--sidebar-primary);
+            /* @theme sidebar.primary_foreground */
+            --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+            /* @theme sidebar.accent */
+            --color-sidebar-accent: var(--sidebar-accent);
+            /* @theme sidebar.accent_foreground */
+            --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+            /* @theme sidebar.border */
+            --color-sidebar-border: var(--sidebar-border);
+            /* @theme sidebar.ring */
+            --color-sidebar-ring: var(--sidebar-ring);
+            /* @theme radius.lg */
+            --radius-lg: var(--radius);
+        ";
+        let (_, diags) = analyze_src(css_src);
+        let errs = diags.into_vec();
+        let tc0202_count = errs.iter().filter(|d| d.code == "TC0202").count();
+        assert_eq!(tc0202_count, 7);
+
+        // When allowNameMismatch is true, warnings should be skipped/passed
+        let (_, diags_allowed) = analyze_src_opts(css_src, true);
+        let errs_allowed = diags_allowed.into_vec();
+        let tc0202_allowed_count = errs_allowed.iter().filter(|d| d.code == "TC0202").count();
+        assert_eq!(tc0202_allowed_count, 0);
     }
 
     #[test]

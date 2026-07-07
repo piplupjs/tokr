@@ -17,7 +17,7 @@ fn test_golden_sample() {
     };
 
     let Some((ts, _dts)) =
-        compile(src, &cfg, None, false, false).expect("Should compile successfully")
+        compile(src, &cfg, false, None, false, false).expect("Should compile successfully")
     else {
         panic!("expected Some output")
     };
@@ -45,7 +45,7 @@ fn test_box_shadow_array() {
     };
 
     let Some((ts, _dts)) =
-        compile(src, &cfg, None, false, false).expect("Should compile successfully")
+        compile(src, &cfg, false, None, false, false).expect("Should compile successfully")
     else {
         panic!("expected Some output")
     };
@@ -76,7 +76,7 @@ fn test_css_variables() {
     };
 
     let Some((ts, _dts)) =
-        compile(src, &cfg, None, false, false).expect("Should compile successfully")
+        compile(src, &cfg, false, None, false, false).expect("Should compile successfully")
     else {
         panic!("expected Some output")
     };
@@ -86,4 +86,47 @@ fn test_css_variables() {
     assert!(ts.contains("base: \"#fafafa\""));
     assert!(ts.contains("black: \"#000\""));
     assert!(ts.contains("foreground: \"var(--black)\""));
+}
+
+#[test]
+fn test_css_variable_name_mismatches() {
+    let src = "
+    /* @theme sidebar.primary */
+    --color-sidebar-primary: var(--sidebar-primary);
+    
+    /* @theme sidebar.primary_foreground */
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    
+    /* @theme sidebar.accent */
+    --color-sidebar-accent: var(--sidebar-accent);
+    
+    /* @theme sidebar.accent_foreground */
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    
+    /* @theme sidebar.border */
+    --color-sidebar-border: var(--sidebar-border);
+    
+    /* @theme sidebar.ring */
+    --color-sidebar-ring: var(--sidebar-ring);
+    
+    /* @theme radius.lg */
+    --radius-lg: var(--radius);
+    ";
+
+    let cfg = PassConfig {
+        strict: true, // promote warnings to errors
+        order_table: HashMap::new(),
+    };
+
+    let res = compile(src, &cfg, false, None, false, false);
+    assert!(res.is_err());
+    let errs = res.unwrap_err().into_vec();
+
+    // Check that we got all 7 expected TC0202 name mismatch errors
+    let tc0202_errors: Vec<_> = errs.iter().filter(|d| d.code == "TC0202").collect();
+    assert_eq!(tc0202_errors.len(), 7);
+
+    // Verify compile succeeds when allow_name_mismatch is true
+    let res_allowed = compile(src, &cfg, true, None, false, false);
+    assert!(res_allowed.is_ok());
 }

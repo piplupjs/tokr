@@ -217,7 +217,7 @@ mod tests {
             });
         }
         let mut bag = tokr_diagnostics::DiagnosticBag::default();
-        tokr_sema::analyze(&file, &mut bag)
+        tokr_sema::analyze(&file, false, &mut bag)
     }
 
     #[test]

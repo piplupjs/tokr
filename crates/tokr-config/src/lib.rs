@@ -52,6 +52,9 @@ pub struct ConfigOptions {
     pub declaration: bool,
     #[serde(default)]
     pub order: Option<HashMap<String, Vec<String>>>,
+    #[serde(rename = "allowNameMismatch")]
+    #[serde(default)]
+    pub allow_name_mismatch: bool,
     #[serde(default)]
     pub lint: LintConfig,
 }
@@ -73,6 +76,7 @@ mod tests {
             "output": "theme.ts",
             "options": {
                 "strict": true,
+                "allowNameMismatch": true,
                 "order": {
                     "": ["colors", "typography"]
                 }
@@ -83,6 +87,7 @@ mod tests {
         assert_eq!(config.input, vec!["src/**/*.scss"]);
         assert_eq!(config.output, Some("theme.ts".to_string()));
         assert!(config.options.strict);
+        assert!(config.options.allow_name_mismatch);
         assert_eq!(
             config.options.order.unwrap().get(""),
             Some(&vec!["colors".to_string(), "typography".to_string()])

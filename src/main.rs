@@ -91,6 +91,7 @@ fn main() {
             &out_dir,
             &discovery,
             &pass_cfg,
+            config.options.allow_name_mismatch,
             lint_cfg,
             is_js,
             declaration,

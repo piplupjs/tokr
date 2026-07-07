@@ -15,6 +15,7 @@ use tokr_ir::PassConfig;
 pub fn compile(
     src: &str,
     cfg: &PassConfig,
+    allow_name_mismatch: bool,
     lint_cfg: Option<&tokr_config::LintConfig>,
     is_js: bool,
     declaration: bool,
@@ -50,7 +51,7 @@ pub fn compile(
         linter.lint_file(&file, &mut diags);
     }
 
-    let sym_table = tokr_sema::analyze(&file, &mut diags);
+    let sym_table = tokr_sema::analyze(&file, allow_name_mismatch, &mut diags);
 
     if cfg.strict {
         diags.promote_warnings_to_errors();
@@ -89,6 +90,7 @@ pub fn compile_project(
     output_dir: &Path,
     discovery: &discovery::FileDiscovery,
     cfg: &PassConfig,
+    allow_name_mismatch: bool,
     lint_cfg: Option<&tokr_config::LintConfig>,
     is_js: bool,
     declaration: bool,
@@ -108,7 +110,7 @@ pub fn compile_project(
                 }
             };
 
-            match compile(&src, cfg, lint_cfg, is_js, declaration) {
+            match compile(&src, cfg, allow_name_mismatch, lint_cfg, is_js, declaration) {
                 Ok(None) => Ok(()), // no @theme annotations — skip output file
                 Ok(Some((main_code, decl_code))) => {
                     let main_ext = if is_js { "js" } else { "ts" };
@@ -239,6 +241,7 @@ mod tests {
             out_dir,
             &discovery,
             &PassConfig::default(),
+            false,
             None,
             false, // is_js => generate .ts
             true,  // declaration => generate .d.ts
@@ -277,6 +280,7 @@ mod tests {
             out_dir,
             &discovery,
             &PassConfig::default(),
+            false,
             None,
             false, // is_js => generate .ts
             false, // declaration
